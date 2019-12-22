@@ -1,0 +1,40 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage [utf8]{inputenc}
+\usepackage [italian]{babel}
+\usepackage{hyperref}
+\pagenumbering{gobble}
+\setlength{\oddsidemargin}{-10pt} % default 31pt
+\setlength{\textwidth}{470pt} % default 390pt
+\addtolength{\textheight}{185pt}
+\hypersetup{
+    colorlinks=false,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\title { \vspace{-4.0cm}{\small Università di Pisa\\Corso di Programmazione II (273AA)\\[0.7cm]}Progetto Ocaml - Relazione finale }
+\author { Alessandro Antonelli\\(matricola 507264, corso A) }
+\date { Sessione estiva-autunnale A.A. 2018/2019\\Appello settembre 2019 }
+
+\begin {document}
+ \maketitle
+ 
+ %%%%%%%%%%%%%%%%%%%%%%%  CONTENUTO %%%%%%%%%%%%%%%%%%%%%%%
+ 
+ \section{ Come eseguire il codice e i test }
+ 
+ Avviare un'istanza di un interprete interattivo Ocaml e copiare ed incollare al suo interno l'intero contenuto del file \texttt{EvalExtended.ml} e \underline{poi} del file \texttt{test.ml}. Dovrebbe comparire la scritta ``tutti i test superati''.
+ 
+ Il programma è stato sviluppato e testato tramite la versione 4.07.1 dell'interprete disponibile nella shell Linux (comando \texttt{ocaml} del terminale), su Ubuntu 18.04 LTS 64 bit.
+ 
+ \section{ Descrizione }
+  
+ Rispetto all'\href{http://pages.di.unipi.it/levi/codice-18/evalFunEnvFull.ml}{interprete fornito come base} il sistema dei tipi è stato modificato aggiungendo nel tipo \texttt{exp} la produzione per gli alberi (\texttt{ETree}), per ApplyOver e Select; tra i valori esprimibili sono stati aggiunti gli alberi (\texttt{EvTree}, che si differenziano dalle espressioni-albero per avere il contenuto dei nodi di tipo \texttt{evT} e non \texttt{exp}). Inoltre la funzione \texttt{typecheck} è stata estesa per riconoscere alberi e valori funzionali.
+
+ Nella \textbf{valutazione degli alberi}, all'interno della \texttt{eval}, viene innanzitutto controllato che non ci siano \textit{tag} ripetuti (per mezzo della funzione \texttt{tagSonoUnivoci}): se ce ne sono viene segnalato un errore. Successivamente viene eseguito il parsing dell'espressione-albero di input, eseguendo chiamate ricorsive alla \texttt{eval} per valutare l'espressione contenuta in ciascun nodo e i sottoalberi sinistro e destro; infine l'albero viene restituito come valore esprimibile.
+ 
+ La \textbf{Select} è stata implementata come funzione ricorsiva che effettua una visita dell'albero: per ogni nodo, se il tag corrisponde restituisce il nodo, altrimenti prosegue la ricerca ricorsivamente sui sottoalberi.
+ 
+ La \textbf{ApplyOver} è stata implementata come funzione ricorsiva che prende l'albero e la lista, e restituisce un nuovo albero con contenuto dei nodi frutto dell'applicazione della funzione. La verifica dell'appartenenza del nodo a quelli da modificare viene effettuata con una funzione d'appoggio \texttt{contains}. In caso positivo, viene costruita l'invocazione della funzione con il contenuto del nodo come parametro, e viene eseguita invocando la \texttt{eval} (per tale ragione, le due funzioni sono dichiarate come mutuamente ricorsive). Calcolato il valore risultante, viene costruito il nuovo nodo con tag immutato, valore pari a quanto calcolato, e sottoalberi dati dalle chiamate ricorsive. L'implementazione fornita permette di usare la ApplyOver anche con funzioni ricorsive (l'espressione con la ApplyOver deve comparire come corpo della \texttt{Let\_rec} della funzione ricorsiva desiderata).
+ \end {document}
